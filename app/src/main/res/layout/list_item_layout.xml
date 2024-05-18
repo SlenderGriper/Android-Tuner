@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="65dp"
+    android:layout_height="match_parent"
+    android:layout_margin="10px"
+    android:orientation="vertical"
+    android:rotationX="-1">
+
+
+    <TextView
+        android:id="@+id/stringCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="1"
+        android:textSize="24sp" />
+
+
+
+    <TextView
+        android:id="@+id/currentNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="D"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/stringChose"
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
+        android:maxWidth="150px"
+        android:maxHeight="150px"
+        android:padding="0px"
+        android:text="C#"
+        android:textSize="24sp"
+        app:cornerRadius="20dp" />
+</LinearLayout>

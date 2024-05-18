@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Gitar Tuner</string>
+    <string-array name="types">
+        <item>standard</item>
+        <item>drop</item>
+        <item>open</item>
+    </string-array>
+    <string-array name="musical_notes">
+        <item>C</item>
+        <item>C#</item>
+        <item>D</item>
+        <item>D#</item>
+        <item>E</item>
+        <item>F</item>
+        <item>F#</item>
+        <item>G</item>
+        <item>G#</item>
+        <item>A</item>
+        <item>A#</item>
+        <item>B</item>
+    </string-array>
+    <string name="guitar_title">Гитара</string>
+    <string name="note_title">Строй</string>
+</resources>

@@ -1,31 +1,30 @@
 package com.example.gitartuner.controller;
 
 import android.app.Activity;
-import android.content.Context;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.gitartuner.dto.TuneDTO;
-import com.example.gitartuner.model.FrequencyGetter;
-import com.example.gitartuner.model.OnStringClickListener;
+import com.example.gitartuner.dto.NoteDto;
+import com.example.gitartuner.dto.NoteStorage;
+import com.example.gitartuner.dto.TuneStorage;
+import com.example.gitartuner.model.NoteCalculator;
+import com.example.gitartuner.model.inteface.FrequencyGetter;
+import com.example.gitartuner.model.inteface.OnStringClickListener;
 import com.example.gitartuner.model.adapter.TuneAdapter;
 
 public class MainContent implements OnStringClickListener, FrequencyGetter {
     private Activity activity;
     private AudioRecorder audioRecorder;
-    private TuneDTO notes;
+    private TuneStorage notes;
     private TuneAdapter adapter;
     public MainContent(Activity activity){
         this.activity=activity;
     }
-    public void setAdapterRecyclerView(RecyclerView recyclerView,String[] wantedNotes){
+    public void setAdapterRecyclerView(RecyclerView recyclerView, NoteStorage noteStorage){
 //        String[] types = {"standart", "drop", "open"};
 //        String[] semitones = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
-        notes=new TuneDTO(wantedNotes.length);
-        for (int i=0;i<wantedNotes.length;i++)
-        {
-           notes.setWanted(i,wantedNotes[i]);
-        }
+        notes=new TuneStorage(noteStorage.getLenght());
+        notes.setWantedStorage(noteStorage);
 
         adapter = new TuneAdapter(notes);
         recyclerView.setAdapter(adapter);
@@ -44,8 +43,9 @@ public class MainContent implements OnStringClickListener, FrequencyGetter {
 
     @Override
     public void getFrequency(double frequency) {
-        String note = "" + frequency + "";
-        notes.setCurrent(notes.getSelected(), note);
+        NoteCalculator noteCalculator=new NoteCalculator();
+        NoteDto noteDTO=noteCalculator.frequencyToNoteId(frequency);
+        notes.setCurrent(notes.getSelected(), noteDTO);
 
         notes.resetSelected();
         activity.runOnUiThread(new Runnable() {

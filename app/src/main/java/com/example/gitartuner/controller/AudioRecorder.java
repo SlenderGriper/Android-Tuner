@@ -1,28 +1,13 @@
 package com.example.gitartuner.controller;
 
-import static androidx.core.app.ActivityCompat.requestPermissions;
-import static androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale;
-
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.os.Build;
-import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import com.example.gitartuner.R;
-import com.example.gitartuner.model.FrequencyGetter;
+import com.example.gitartuner.model.inteface.FrequencyGetter;
 import com.example.gitartuner.model.SoundFrequencyAnalyzer;
 import com.example.gitartuner.model.TunerMath;
 import com.github.mikephil.charting.charts.LineChart;

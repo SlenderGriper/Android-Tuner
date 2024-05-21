@@ -1,9 +1,8 @@
 package com.example.gitartuner.model;
 
 import android.app.Activity;
-import android.util.Log;
 
-import com.example.gitartuner.controller.AudioRecorder;
+import com.example.gitartuner.model.inteface.FrequencyGetter;
 
 public class SoundFrequencyAnalyzer {
    private int sampleRate;
@@ -29,7 +28,9 @@ public class SoundFrequencyAnalyzer {
         double fr=indexToFruquency(index);
         if(maxAmplitude<MinSoundAmplitude)return "";
         if(record) recordNote(index);
-        String note = FrequencyToNote(fr);
+        NoteCalculator noteCalculator=new NoteCalculator();
+
+        String note = noteCalculator.noteIdToNote(noteCalculator.frequencyToNoteId(fr));
         return note+" "+fr;
     }
     private void recordNote(int index){
@@ -62,6 +63,8 @@ public class SoundFrequencyAnalyzer {
        if(record)return ;
 
        double frequency=indexToFruquency(indexNote);
+
+
        frequencyGetter.getFrequency(frequency);
     }
 
@@ -83,17 +86,6 @@ public class SoundFrequencyAnalyzer {
         return (double)maxIndex * sampleRate / numSamples;
     }
 
-    public String FrequencyToNote(double frequency)
-    {
-        double A4Frequency = 440.0;
-        int A4MIDI = 69;
-        String[] noteNames = {  "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 
-        int note_number = (int) Math.round(noteNames.length * (Math.log(frequency / A4Frequency) / Math.log(2)) + A4MIDI);
-        int note = note_number % noteNames.length;
-        int octave = (note_number) / noteNames.length;
-
-        return noteNames[note]+""+(octave-1);
-    }
 
 }

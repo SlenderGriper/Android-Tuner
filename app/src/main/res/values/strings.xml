@@ -3,7 +3,6 @@
     <string-array name="types">
         <item>standard</item>
         <item>drop</item>
-        <item>open</item>
     </string-array>
     <string-array name="musical_notes">
         <item>C</item>

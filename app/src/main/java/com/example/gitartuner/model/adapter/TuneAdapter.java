@@ -12,19 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gitartuner.R;
-import com.example.gitartuner.dto.TuneDTO;
-import com.example.gitartuner.model.OnStringClickListener;
-
-import java.util.List;
+import com.example.gitartuner.dto.TuneStorage;
+import com.example.gitartuner.model.inteface.OnStringClickListener;
 
 public class    TuneAdapter extends RecyclerView.Adapter<TuneAdapter.MyViewHolder> {
 
-    private TuneDTO  mData;
+    private TuneStorage mData;
     private OnStringClickListener onStringClickListener;
     public void setOnItemClickListener(OnStringClickListener onItemClickListener) {
         this.onStringClickListener = onItemClickListener;
     }
-    public TuneAdapter(TuneDTO data) {
+    public TuneAdapter(TuneStorage data) {
         mData = data;
     }
 
@@ -37,9 +35,9 @@ public class    TuneAdapter extends RecyclerView.Adapter<TuneAdapter.MyViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.stringChose.setText(mData.getWanted(position));
-        holder.stringCount.setText(Integer.toString(mData.getLenght()-position));
-        holder.currentNote.setText(mData.getCurrent(position));
+        holder.stringChose.setText(mData.getStringWanted(position));
+        holder.stringCount.setText(Integer.toString(position+1));
+        holder.currentNote.setText(mData.getStringCurrent(position));
 
         if(position==mData.getSelected()){
             holder.stringChose.setBackgroundColor(Color.rgb(0,200,0));

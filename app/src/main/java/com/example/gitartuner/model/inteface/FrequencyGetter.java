@@ -1,4 +1,4 @@
-package com.example.gitartuner.model;
+package com.example.gitartuner.model.inteface;
 
 public interface FrequencyGetter {
     void getFrequency(double frequency);

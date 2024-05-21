@@ -1,15 +1,15 @@
 package com.example.gitartuner.controller;
 
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gitartuner.R;
-import com.example.gitartuner.dto.NoteDto;
-import com.example.gitartuner.model.adapter.GitarAdapter;
+import com.example.gitartuner.dto.NoteStorage;
+import com.example.gitartuner.model.NoteCalculator;
 import com.example.gitartuner.model.adapter.NoteAdapter;
 
 public class NoteDialogLogic {
@@ -18,18 +18,19 @@ public class NoteDialogLogic {
     private Spinner tuning;
     private RecyclerView recyclerView;
     private NoteAdapter adapter;
-    private NoteDto[] itemList;
-    public NoteDialogLogic(View view){
-        this.view=view;
-        note=view.findViewById(R.id.tuning);
-        tuning=view.findViewById(R.id.note);
+    private NoteStorage itemList;
+    private int lenght;
+
+    public NoteDialogLogic(View view) {
+        this.view = view;
+        note = view.findViewById(R.id.note);
+        tuning = view.findViewById(R.id.tuning);
         recyclerView = view.findViewById(R.id.gitarList);
     }
-    public void Initial(){
-        itemList=new NoteDto[3];
-        itemList[0]=new NoteDto(3,4);
-        itemList[1]=new NoteDto(11,3);
-        itemList[2]=new NoteDto(6,3);
+
+    public void initial(int lenght) {
+        this.lenght = lenght;
+        itemList = new NoteStorage(lenght);
         adapter = new NoteAdapter(itemList);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
@@ -37,10 +38,46 @@ public class NoteDialogLogic {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
 
+        tuning.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                stringNote();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+        note.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                stringNote();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+
+
     }
-    public void getData(){
 
 
+    private void stringNote(){
+        int typesId=tuning.getSelectedItemPosition();
+        int firstNote=note.getSelectedItemPosition();
+        NoteCalculator noteCalculator=new NoteCalculator();
+
+        NoteStorage newItemList= noteCalculator.getStringNote(typesId,firstNote,lenght);
+        itemList.update(newItemList);
+        adapter.notifyDataSetChanged();
+    }
+    public NoteStorage getData() {
+        return itemList;
     }
 
 

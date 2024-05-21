@@ -1,4 +1,4 @@
-package com.example.gitartuner.model;
+package com.example.gitartuner.model.inteface;
 
 public interface OnStringClickListener {
     void onItemClick(int position);

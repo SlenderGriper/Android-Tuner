@@ -1,29 +1,27 @@
 package com.example.gitartuner.model.adapter;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gitartuner.R;
-import com.example.gitartuner.dto.NoteDto;
-import com.example.gitartuner.dto.TuneDTO;
-import com.example.gitartuner.model.OnStringClickListener;
+import com.example.gitartuner.dto.NoteStorage;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> {
 
 
-    private NoteDto[] mData;
+    private NoteStorage mData;
 
-    public NoteAdapter(NoteDto[] data) {
+    public NoteAdapter(NoteStorage data) {
         mData = data;
     }
 
@@ -36,17 +34,38 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull NoteAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.note.setSelection(mData[position].note);
-        holder.octave.setText(""+mData[position].octava);
+        holder.note.setSelection(mData.getNotes(position));
+        holder.octave.setText(""+mData.getOctava(position));
+
+        holder.octave.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                mData.setOctava(position,Integer.parseInt(holder.octave.getText().toString()));
+            }
+        });
+
+        holder.note.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            int index=position;
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                mData.setNotes(index,position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
 
     }
 
     @Override
     public int getItemCount() {
-        return mData.length;
+        return mData.getLenght();
     }
 
-    static class MyViewHolder extends RecyclerView.ViewHolder {
+   static class MyViewHolder extends RecyclerView.ViewHolder {
         Spinner note;
         EditText octave;
 

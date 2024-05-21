@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         String[] test={"C","B","C","B","C","B"};
         MainContent mainContent = new MainContent(this);
-        mainContent.setAdapterRecyclerView(recyclerView,test);
+
         mainContent.setAudioRecorder(audioRecorder);
 
         Button note = binding.tune;
@@ -84,9 +84,9 @@ public class MainActivity extends AppCompatActivity {
             dialog.setView(view);
 
             NoteDialogLogic logic = new NoteDialogLogic(view);
-            logic.Initial();
+            logic.initial(6);
             dialog.setPositiveButton("OK", (dialog1, which) -> {
-                logic.getData();
+                mainContent.setAdapterRecyclerView(recyclerView,logic.getData());
             });
             dialog.setNegativeButton("Cancel", (dialog1, which) -> {
 

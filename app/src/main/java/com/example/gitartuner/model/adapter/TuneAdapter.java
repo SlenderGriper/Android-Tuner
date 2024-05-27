@@ -12,15 +12,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gitartuner.R;
+import com.example.gitartuner.controller.BluetoothController;
 import com.example.gitartuner.dto.TuneStorage;
 import com.example.gitartuner.model.inteface.OnStringClickListener;
 
-public class    TuneAdapter extends RecyclerView.Adapter<TuneAdapter.MyViewHolder> {
-
+public class TuneAdapter extends RecyclerView.Adapter<TuneAdapter.MyViewHolder>{
     private TuneStorage mData;
-    private OnStringClickListener onStringClickListener;
-    public void setOnItemClickListener(OnStringClickListener onItemClickListener) {
-        this.onStringClickListener = onItemClickListener;
+
+    private BluetoothController bluetoothController;
+    public void setOnItemClickListener(BluetoothController bluetoothController) {
+        this.bluetoothController = bluetoothController;
     }
     public TuneAdapter(TuneStorage data) {
         mData = data;
@@ -28,28 +29,28 @@ public class    TuneAdapter extends RecyclerView.Adapter<TuneAdapter.MyViewHolde
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_layout, parent, false);
-        return new MyViewHolder(view);
+    public TuneAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_tune, parent, false);
+        return new TuneAdapter.MyViewHolder(view);
     }
+
+
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.stringChose.setText(mData.getStringWanted(position));
-        holder.stringCount.setText(Integer.toString(position+1));
+        holder.stringChose.setText("tune");
+        holder.wantedNote.setText(mData.getStringWanted(position));
         holder.currentNote.setText(mData.getStringCurrent(position));
 
-        if(position==mData.getSelected()){
-            holder.stringChose.setBackgroundColor(Color.rgb(0,200,0));
-        }
-        else holder.stringChose.setBackgroundColor(Color.GRAY);
+        if(mData.getStringCurrent(position)=="")holder.stringChose.setEnabled(false);
 
-        holder.stringChose.setOnClickListener(new View.OnClickListener() {
+        else holder.stringChose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onStringClickListener != null) {
-                    onStringClickListener.onItemClick(position);
+                if (bluetoothController != null) {
+                    bluetoothController.sendData(mData.getMassageArduino(position));
                 }
+               String test = mData.getMassageArduino(position);
             }
         });
     }
@@ -62,12 +63,12 @@ public class    TuneAdapter extends RecyclerView.Adapter<TuneAdapter.MyViewHolde
     static class MyViewHolder extends RecyclerView.ViewHolder {
         Button stringChose;
         TextView currentNote;
-        TextView stringCount;
+        TextView wantedNote;
         public MyViewHolder(View itemView) {
             super(itemView);
-            stringChose = itemView.findViewById(R.id.stringChose);
-            currentNote= itemView.findViewById(R.id.currentNote);
-            stringCount= itemView.findViewById(R.id.stringCount);
+            stringChose = itemView.findViewById(R.id.sendArduino);
+            currentNote= itemView.findViewById(R.id.current);
+            wantedNote= itemView.findViewById(R.id.wanted);
 
         }
     }

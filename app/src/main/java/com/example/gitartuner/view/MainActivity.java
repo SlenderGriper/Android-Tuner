@@ -5,10 +5,12 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,29 +28,36 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gitartuner.R;
 import com.example.gitartuner.controller.AudioRecorder;
+import com.example.gitartuner.controller.BluetoothController;
 import com.example.gitartuner.controller.GitarDialogLogic;
 import com.example.gitartuner.controller.MainContent;
 import com.example.gitartuner.controller.NoteDialogLogic;
+import com.example.gitartuner.controller.SendButtonSwitch;
 import com.example.gitartuner.databinding.ActivityMainBinding;
+import com.example.gitartuner.model.ConnectedThread;
 import com.example.gitartuner.model.TunerMath;
+import com.example.gitartuner.model.adapter.TuneAdapter;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
-
-
+    private static final int REQUEST_ENABLE_BT = 1;
+    private BluetoothAdapter btAdapter = null;
+    private BluetoothController bluetoothController;
     private ActivityMainBinding binding;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private AudioRecorder audioRecorder;
-
+ private MainContent mainContent;
 
     @SuppressLint("ResourceType")
     @Override
@@ -60,19 +69,22 @@ public class MainActivity extends AppCompatActivity {
 
         TextView noteText=binding.note;
         LineChart lineChart = binding.chart1;
-        audioRecorder=new AudioRecorder(this,noteText,lineChart);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO_PERMISSION);
-        } else {
-            audioRecorder.startRecording();
-        }
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO_PERMISSION);
+            } else {
+                audioRecorder=new AudioRecorder(this,noteText,lineChart);
+                audioRecorder.startRecording();
+            }
 
         RecyclerView recyclerView = binding.recyclerview;
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        String[] test={"C","B","C","B","C","B"};
-        MainContent mainContent = new MainContent(this);
+         mainContent = new MainContent(this);
 
         mainContent.setAudioRecorder(audioRecorder);
+
+        Button sendArduino=binding.tuneArduinoButton;
+        SendButtonSwitch sendButtonSwitch =new SendButtonSwitch(sendArduino);
 
         Button note = binding.tune;
         note.setOnClickListener(v -> {
@@ -87,13 +99,13 @@ public class MainActivity extends AppCompatActivity {
             logic.initial(6);
             dialog.setPositiveButton("OK", (dialog1, which) -> {
                 mainContent.setAdapterRecyclerView(recyclerView,logic.getData());
+                sendButtonSwitch.enableDataFlag();
             });
             dialog.setNegativeButton("Cancel", (dialog1, which) -> {
 
             });
             dialog.create().show();
         });
-
         Button gitar = binding.gitar;
         gitar.setOnClickListener(v -> {
 
@@ -110,9 +122,69 @@ public class MainActivity extends AppCompatActivity {
             });
             dialog.create().show();
         });
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        Button connect = binding.connect;
+        connect.setOnClickListener(v -> {
+            if(btAdapter==null){
+                Toast.makeText(MainActivity.this,"Ошибка с блютуз модулем", Toast.LENGTH_LONG).show();
+                sendButtonSwitch.enableBluetoothFlag();
+                return;
+            }
+            if(!btAdapter.isEnabled()){
+                BluetoothEnableIntent();
+                return;
+            }
+
+            if(bluetoothController==null)
+                bluetoothController=new BluetoothController(MainActivity.this,btAdapter);
+            else if(!bluetoothController.isConnected())
+                bluetoothController.onStartBluetooth();
+
+            if(bluetoothController.isConnected()) sendButtonSwitch.enableBluetoothFlag();
+
+        });
 
 
+        sendArduino.setOnClickListener(v -> {
+            LayoutInflater inflater = getLayoutInflater();
+            View view = inflater.inflate(R.layout.tune_dialog, null);
+            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+            dialog.setTitle("Настройка гитары");
+            dialog.setView(view);
 
+            RecyclerView recyclerView2=view.findViewById(R.id.mainContent);
+            TuneAdapter tuneAdapter=new TuneAdapter(mainContent.getTuneStorage());
+            tuneAdapter.setOnItemClickListener(bluetoothController);
+            recyclerView2.setAdapter(tuneAdapter);
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+            layoutManager.setStackFromEnd(true);
+
+            recyclerView2.setLayoutManager(layoutManager);
+            dialog.setNegativeButton("Cancel", (dialog1, which) -> {
+
+            });
+
+            dialog.create().show();
+        });
+
+
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (bluetoothController!=null)bluetoothController.onPause();
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private void BluetoothEnableIntent() {
+        Intent enableBtIntent = new Intent(btAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 
 
 
@@ -128,6 +200,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
+
 
 
 }

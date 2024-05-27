@@ -46,6 +46,16 @@ public class TuneStorage {
         }
         return new NoteDto(noteId,octave);
     }
+    public  String getMassageArduino(int index){
+      int current= currentNote.getNotes(index)+currentNote.getOctava(index)*12;
+      int wanted= wantedNote.getNotes(index)+wantedNote.getOctava(index)*12;
+      String dir;
+      int sum=wanted-current;
+       sum*=10;
+      if(sum>0)dir="0 ";
+      else {sum=-sum;dir=" 1 ";}
+      return dir+Integer.toString(sum)+" ";
+    }
   public int getLenght(){return lenght;}
   public int getSelected(){return selected;}
   public void setSelected(int value){selected=value;}

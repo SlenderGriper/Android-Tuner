@@ -7,7 +7,7 @@ import java.util.ConcurrentModificationException;
 public class TunerMath {
     private int sampleRate;
     private int len;
-    private int order=4;
+    private int order=2;
     private double cutoffFrequencyLow=60;
     private double cutoffFrequencyHigh=2000;
     public TunerMath(){

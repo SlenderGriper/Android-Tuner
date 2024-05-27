@@ -10,27 +10,26 @@ import com.example.gitartuner.dto.TuneStorage;
 import com.example.gitartuner.model.NoteCalculator;
 import com.example.gitartuner.model.inteface.FrequencyGetter;
 import com.example.gitartuner.model.inteface.OnStringClickListener;
-import com.example.gitartuner.model.adapter.TuneAdapter;
+import com.example.gitartuner.model.adapter.GettingNoteAdapter;
 
 public class MainContent implements OnStringClickListener, FrequencyGetter {
     private Activity activity;
     private AudioRecorder audioRecorder;
     private TuneStorage notes;
-    private TuneAdapter adapter;
+    private GettingNoteAdapter adapter;
     public MainContent(Activity activity){
         this.activity=activity;
     }
     public void setAdapterRecyclerView(RecyclerView recyclerView, NoteStorage noteStorage){
-//        String[] types = {"standart", "drop", "open"};
-//        String[] semitones = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
         notes=new TuneStorage(noteStorage.getLenght());
         notes.setWantedStorage(noteStorage);
 
-        adapter = new TuneAdapter(notes);
+        adapter = new GettingNoteAdapter(notes);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
     }
 
+    public TuneStorage getTuneStorage(){return notes;}
     public void setAudioRecorder(AudioRecorder audioRecorder){
         this.audioRecorder=audioRecorder;
     }

@@ -17,7 +17,7 @@ public class NoteDialogLogic {
     private Spinner note;
     private Spinner tuning;
     private RecyclerView recyclerView;
-    private NoteAdapter adapter;
+    private  NoteAdapter adapter;
     private NoteStorage itemList;
     private int lenght;
 
@@ -31,7 +31,7 @@ public class NoteDialogLogic {
     public void initial(int lenght) {
         this.lenght = lenght;
         itemList = new NoteStorage(lenght);
-        adapter = new NoteAdapter(itemList);
+         adapter = new NoteAdapter(itemList);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         layoutManager.setStackFromEnd(true);

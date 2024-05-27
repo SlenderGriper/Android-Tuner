@@ -1,131 +1,105 @@
 package com.example.gitartuner.view;
 
-import static android.content.Intent.getIntent;
+
+import java.io.IOException;
+
+import java.io.OutputStream;
+
+import java.util.UUID;
+
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+
 import android.bluetooth.BluetoothAdapter;
+
 import android.bluetooth.BluetoothDevice;
 
-import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
+
 import android.content.Intent;
+
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.service.controls.Control;
+
+import android.util.Log;
+
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+
+import android.view.View.OnClickListener;
+
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.PermissionChecker;
-
 
 import com.example.gitartuner.R;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.UUID;
+import com.example.gitartuner.controller.BluetoothController;
 
 
 public class TestActivity extends AppCompatActivity {
 
-    private BluetoothAdapter myBluetooth = null;
-    private Set<BluetoothDevice> pairedDevices;
-    public static String EXTRA_ADDRESS = "device_address";
-    ListView devicelist;
 
-    @SuppressLint("ServiceCast")
+    Button btnOn, btnOff;
+    private static final int REQUEST_ENABLE_BT = 1;
+    private BluetoothAdapter btAdapter = null;
+    BluetoothController bluetoothController;
+
+    /**
+     * Called when the activity is first created.
+     */
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
-        Button btnPaired;
 
-        btnPaired = (Button) findViewById(R.id.button);
-        devicelist = (ListView) findViewById(R.id.listView);
+        setContentView(R.layout.activity_main);
+        btnOn = (Button) findViewById(R.id.connect);
+        btnOff = (Button) findViewById(R.id.tuneArduinoButton);
+        TestActivity test = this;
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
-        myBluetooth = bluetoothManager.getAdapter();
-        if (myBluetooth == null) {
-            Toast.makeText(getApplicationContext(), "Bluetooth device not available", Toast.LENGTH_LONG).show();
-            finish();
-        } else if (!myBluetooth.isEnabled()) {
-            Intent turnBTon = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            startActivityForResult(turnBTon, 1);
-        }
+        btnOn.setOnClickListener(new OnClickListener() {
 
-        btnPaired.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
-                pairedDevicesList();
+                if(btAdapter==null){
+                    Toast.makeText(TestActivity.this,"Ошибка с блютуз модулем", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(!btAdapter.isEnabled())checkBTState();
+
+                if(bluetoothController==null)bluetoothController=new BluetoothController(TestActivity.this,btAdapter);
+                else if(!bluetoothController.isConnected())bluetoothController.onStartBluetooth();
+                if(bluetoothController.isConnected()) bluetoothController.sendData("0");
+
             }
+
         });
 
+
     }
 
-    private void pairedDevicesList() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        pairedDevices = myBluetooth.getBondedDevices();
-        ArrayList list = new ArrayList();
 
-        if ( pairedDevices.size() > 0 ) {
-            for ( BluetoothDevice bt : pairedDevices ) {
-                list.add(bt.getName().toString() + "\n" + bt.getAddress().toString());
-            }
-        } else {
-            Toast.makeText(getApplicationContext(), "No Paired Bluetooth Devices Found.", Toast.LENGTH_LONG).show();
-        }
 
-        final ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
-        devicelist.setAdapter(adapter);
-        devicelist.setOnItemClickListener(myListClickListener);
+    @Override
+    public void onPause() {
+        super.onPause();
+
+       if (bluetoothController!=null)bluetoothController.onPause();
+
     }
 
-    private AdapterView.OnItemClickListener myListClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String info = ((TextView) view).getText().toString();
-            String address = info.substring(info.length()-17);
 
-            Intent i = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-                i = new Intent(TestActivity.this, Control.class);
-            }
-            i.putExtra(EXTRA_ADDRESS, address);
-            startActivity(i);
-        }
-    };
+    @SuppressLint("MissingPermission")
+    private void checkBTState() {
+            Intent enableBtIntent = new Intent(btAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 
+
+    }
 
 }
-

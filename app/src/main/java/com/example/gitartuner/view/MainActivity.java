@@ -34,6 +34,7 @@ import com.example.gitartuner.controller.MainContent;
 import com.example.gitartuner.controller.NoteDialogLogic;
 import com.example.gitartuner.controller.SendButtonSwitch;
 import com.example.gitartuner.databinding.ActivityMainBinding;
+import com.example.gitartuner.dto.GuitarDto;
 import com.example.gitartuner.model.ConnectedThread;
 import com.example.gitartuner.model.TunerMath;
 import com.example.gitartuner.model.adapter.TuneAdapter;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private AudioRecorder audioRecorder;
  private MainContent mainContent;
+ private int lenght=6;
 
     @SuppressLint("ResourceType")
     @Override
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.setView(view);
 
             NoteDialogLogic logic = new NoteDialogLogic(view);
-            logic.initial(6);
+            logic.initial(lenght);
             dialog.setPositiveButton("OK", (dialog1, which) -> {
                 mainContent.setAdapterRecyclerView(recyclerView,logic.getData());
                 sendButtonSwitch.enableDataFlag();
@@ -106,8 +108,8 @@ public class MainActivity extends AppCompatActivity {
             });
             dialog.create().show();
         });
-        Button gitar = binding.gitar;
-        gitar.setOnClickListener(v -> {
+        Button guitar = binding.gitar;
+        guitar.setOnClickListener(v -> {
 
             LayoutInflater inflater = getLayoutInflater();
             View view = inflater.inflate(R.layout.gitar_dialog, null);
@@ -115,10 +117,13 @@ public class MainActivity extends AppCompatActivity {
             dialog.setTitle(R.string.guitar_title);
             dialog.setView(view);
             GitarDialogLogic logic = new GitarDialogLogic(view);
-            logic.Initial();
 
             dialog.setNegativeButton("Cancel", (dialog1, which) -> {
-
+                GuitarDto guitarDto=logic.getData();
+                if (guitarDto==null)return;
+                TextView guitarInfo=binding.GitarInfoText;
+                guitarInfo.setText(guitarDto.name);
+                lenght=guitarDto.stringsCount;
             });
             dialog.create().show();
         });

@@ -20,10 +20,10 @@ import java.util.List;
 
 
 public class AudioRecorder {
-    private static final int SAMPLE_RATE = 8000;
+    private static final int SAMPLE_RATE = 4000;
     private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
-    private static final int BUFFER_SIZE =512+512 ;
+    private static final int BUFFER_SIZE =512;
     private AudioRecord audioRecord;
     private boolean isRecording = false;
     private TextView noteText;
@@ -73,7 +73,7 @@ public class AudioRecorder {
                     String note = soundFrequencyAnalyzer.CalculeteNote(data);
 
                     List<Entry> newEntries = new ArrayList<>(); // Create a separate list for new entries
-                    for (int i = 0; i < data.length/2; i++) {
+                    for (int i = 0; i < data.length; i++) {
                         newEntries.add(new Entry((float) soundFrequencyAnalyzer.indexToFruquency(i), (float) data[i])); // Add new entries to the separate list
                     }
 

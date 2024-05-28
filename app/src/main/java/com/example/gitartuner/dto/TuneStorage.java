@@ -32,20 +32,11 @@ public class TuneStorage {
       NoteDto item;
       for(int i=0;i<lenght;i++){
           item= noteStorage.getNoteDto(i);
-          item=noteCorrector(item,12+3);
+          item.note=(item.note+3) %12;
+          item.octave+=1;
           wantedNote.addNoteDto(item,i);
       }
   }
-    public NoteDto noteCorrector(NoteDto note,int deductible){
-        int noteId=note.note+deductible;
-        int octave=note.octave;
-
-        while (noteId>=12){
-            noteId-=12;
-            octave+=1;
-        }
-        return new NoteDto(noteId,octave);
-    }
     public  String getMassageArduino(int index){
       int current= currentNote.getNotes(index)+currentNote.getOctava(index)*12;
       int wanted= wantedNote.getNotes(index)+wantedNote.getOctava(index)*12;

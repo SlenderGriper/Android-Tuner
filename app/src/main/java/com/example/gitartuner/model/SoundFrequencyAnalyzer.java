@@ -9,7 +9,7 @@ public class SoundFrequencyAnalyzer {
     private int numSamples;
     private float maxAmplitude;
     private float noiseAmplitude;
-    private float MinSoundAmplitude=2;
+    private float MinSoundAmplitude=1;
     private float checkSoundCount=5;
     private int indexNote;
     private int count;

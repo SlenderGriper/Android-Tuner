@@ -3,14 +3,8 @@ package com.example.gitartuner.view;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,26 +23,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.gitartuner.R;
 import com.example.gitartuner.controller.AudioRecorder;
 import com.example.gitartuner.controller.BluetoothController;
-import com.example.gitartuner.controller.GitarDialogLogic;
 import com.example.gitartuner.controller.MainContent;
-import com.example.gitartuner.controller.NoteDialogLogic;
 import com.example.gitartuner.controller.SendButtonSwitch;
 import com.example.gitartuner.databinding.ActivityMainBinding;
 import com.example.gitartuner.dto.GuitarDto;
-import com.example.gitartuner.model.ConnectedThread;
-import com.example.gitartuner.model.TunerMath;
 import com.example.gitartuner.model.adapter.TuneAdapter;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -117,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.setTitle(R.string.guitar_title);
             dialog.setView(view);
             GitarDialogLogic logic = new GitarDialogLogic(view);
-
+            logic.Initial();
             dialog.setNegativeButton("Cancel", (dialog1, which) -> {
                 GuitarDto guitarDto=logic.getData();
                 if (guitarDto==null)return;

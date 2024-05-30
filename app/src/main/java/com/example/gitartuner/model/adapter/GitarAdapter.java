@@ -14,8 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gitartuner.R;
 import com.example.gitartuner.dbo.GuitarDao;
-import com.example.gitartuner.dbo.GuitarDatabase;
-import com.example.gitartuner.dbo.GuitarDatabaseImpl;
+import com.example.gitartuner.dbo.database.GuitarDatabase;
 import com.example.gitartuner.dto.GuitarDto;
 
 import java.util.List;

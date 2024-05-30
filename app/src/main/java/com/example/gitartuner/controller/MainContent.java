@@ -21,7 +21,7 @@ public class MainContent implements OnStringClickListener, FrequencyGetter {
         this.activity=activity;
     }
     public void setAdapterRecyclerView(RecyclerView recyclerView, NoteStorage noteStorage){
-        notes=new TuneStorage(noteStorage.getLenght());
+        notes=new TuneStorage(noteStorage.getLength());
         notes.setWantedStorage(noteStorage);
 
         adapter = new GettingNoteAdapter(notes);

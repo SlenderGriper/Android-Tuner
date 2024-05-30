@@ -1,8 +1,6 @@
 package com.example.gitartuner.model.adapter;
 
 import android.annotation.SuppressLint;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +60,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
 
     @Override
     public int getItemCount() {
-        return mData.getLenght();
+        return mData.getLength();
     }
 
    static class MyViewHolder extends RecyclerView.ViewHolder {

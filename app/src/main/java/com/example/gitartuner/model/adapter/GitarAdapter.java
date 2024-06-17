@@ -16,6 +16,7 @@ import com.example.gitartuner.R;
 import com.example.gitartuner.dbo.GuitarDao;
 import com.example.gitartuner.dbo.database.GuitarDatabase;
 import com.example.gitartuner.dto.GuitarDto;
+import com.example.gitartuner.model.inteface.CalibrationOpener;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -25,14 +26,20 @@ public class GitarAdapter extends RecyclerView.Adapter<GitarAdapter.ViewHolder> 
 
     private List<GuitarDto> itemList;
     private int selected;
-    GuitarDatabase db;
+    private CalibrationOpener opener;
     GuitarDao guitarDao;
+
+
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
     public GitarAdapter(List<GuitarDto> items,GuitarDao guitarDao) {
         itemList = items;
         this.guitarDao = guitarDao;
         selected=-1;
     }
 
+    public void setOpener(CalibrationOpener opener) {
+        this.opener = opener;
+    }
 
     @NonNull
     @Override
@@ -56,14 +63,24 @@ public class GitarAdapter extends RecyclerView.Adapter<GitarAdapter.ViewHolder> 
         });
         holder.deleteButton.setOnClickListener(v -> {
             if(position==selected)selected=-1;
-            GuitarDto item1 =itemList.get(position);
-            itemList.remove(position);
+
+            int newPosition=position;
+            if(itemList.size()==0)return;
+            if(position>=itemList.size())newPosition=itemList.size()-1;
+
+            GuitarDto item1 =itemList.get(newPosition);
+            itemList.remove(newPosition);
             notifyItemRemoved(position);
 
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
+
             executorService.execute(() -> {
                 guitarDao.deleteGuitar(item1);
             });
+        });
+        holder.calibrationButton.setOnClickListener(v -> {
+            if(opener!=null)
+                opener.startFragment(itemList.get(position).id);
+
         });
     }
 
@@ -79,9 +96,11 @@ public class GitarAdapter extends RecyclerView.Adapter<GitarAdapter.ViewHolder> 
         LinearLayout layout;
 
         ImageView selectButton;
+        ImageView calibrationButton;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             layout=itemView.findViewById(R.id.layout);
+            calibrationButton=itemView.findViewById(R.id.CalibrationButton);
             selectButton=itemView.findViewById(R.id.selectButton);
             textView = itemView.findViewById(R.id.gitarTemplate);
             deleteButton = itemView.findViewById(R.id.deleteButton);

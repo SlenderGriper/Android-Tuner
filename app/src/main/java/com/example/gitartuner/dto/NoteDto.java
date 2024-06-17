@@ -7,6 +7,7 @@ import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity(tableName = "Note",
@@ -14,7 +15,7 @@ import java.util.UUID;
         parentColumns = "id",
         childColumns = "note_id",
         onDelete = CASCADE))
-public class NoteDto {
+public class NoteDto implements Serializable {
     @PrimaryKey(autoGenerate = true)
     public int id;
     public UUID note_id;

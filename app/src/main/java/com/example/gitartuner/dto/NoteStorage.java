@@ -6,11 +6,12 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.Relation;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 
 @Entity(tableName = "GuitarTuning")
-public class NoteStorage {
+public class NoteStorage implements Serializable {
     @PrimaryKey
     @NonNull
     public UUID id;

@@ -3,7 +3,9 @@ package com.example.gitartuner.dto;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-public class GuitarTuningDto {
+import java.io.Serializable;
+
+public class GuitarTuningDto implements Serializable {
     @PrimaryKey(autoGenerate = true)
     public int id;
     public int length;

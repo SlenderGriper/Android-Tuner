@@ -3,6 +3,10 @@ package com.example.gitartuner.model;
 import android.app.Activity;
 
 import com.example.gitartuner.model.inteface.FrequencyGetter;
+import com.github.mikephil.charting.data.Entry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SoundFrequencyAnalyzer {
    private int sampleRate;
@@ -15,7 +19,6 @@ public class SoundFrequencyAnalyzer {
     private int count;
     private boolean record;
     private FrequencyGetter frequencyGetter;
-    private Activity context;
 
 
    public SoundFrequencyAnalyzer(int sampleRate, int numSamples){
@@ -51,10 +54,10 @@ public class SoundFrequencyAnalyzer {
        this.frequencyGetter=frequencyGetter;
     }
     public void startRecord(){
-        stopRecord();
+        resetRecord();
        if(frequencyGetter!=null) record=true;
     }
-    private void stopRecord(){
+    private void resetRecord(){
         count=0;
         indexNote=-1;
         record=true;
@@ -85,6 +88,7 @@ public class SoundFrequencyAnalyzer {
     public double indexToFruquency(int maxIndex){
         return (double)maxIndex * sampleRate / numSamples;
     }
+
 
 
 

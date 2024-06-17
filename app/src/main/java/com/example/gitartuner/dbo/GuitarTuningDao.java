@@ -23,9 +23,6 @@ public interface GuitarTuningDao {
     @Delete
     void deleteNote(NoteStorage note);
 
-    @Update
-    void updateNote(NoteStorage note);
-
     // Метод для получения всех нот
     @Query("SELECT * FROM GuitarTuning WHERE length = :length")
     List<NoteStorage> getAllNotes(int length);

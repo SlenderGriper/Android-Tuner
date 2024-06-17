@@ -1,7 +1,6 @@
 package com.example.gitartuner.model.adapter;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gitartuner.R;
-import com.example.gitartuner.controller.BluetoothController;
+import com.example.gitartuner.controller.bluetooth.BluetoothController;
 import com.example.gitartuner.dto.TuneStorage;
-import com.example.gitartuner.model.inteface.OnStringClickListener;
 
 public class TuneAdapter extends RecyclerView.Adapter<TuneAdapter.MyViewHolder>{
     private TuneStorage mData;
@@ -44,14 +42,11 @@ public class TuneAdapter extends RecyclerView.Adapter<TuneAdapter.MyViewHolder>{
 
         if(mData.getStringCurrent(position)=="")holder.stringChose.setEnabled(false);
 
-        else holder.stringChose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (bluetoothController != null) {
-                    bluetoothController.sendData(mData.getMassageArduino(position));
-                }
-               String test = mData.getMassageArduino(position);
+        else holder.stringChose.setOnClickListener(view -> {
+            if (bluetoothController != null) {
+                bluetoothController.sendData(mData.getMassageArduino(position));
             }
+           String test = mData.getMassageArduino(position);
         });
     }
 

@@ -15,7 +15,7 @@ public class TestActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.fragment_main);
 //        GuitarDatabase db = GuitarDatabaseImpl.getInstance(this);
 //        GuitarDao guitarDao = db.getGuitarDao();
 //

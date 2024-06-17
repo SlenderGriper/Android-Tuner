@@ -13,11 +13,6 @@ import java.util.UUID;
 
 @Dao
 public interface NoteDao {
-    @Query("SELECT * FROM Note")
-    List<NoteDto> getAllNotes();
-
-    @Query("SELECT * FROM Note WHERE id = :id")
-    NoteDto getNoteById(int id);
 
     @Insert
     void insert(NoteDto noteDto);
@@ -25,6 +20,4 @@ public interface NoteDao {
     @Update
     void update(NoteDto noteDto);
 
-    @Delete
-    void delete(NoteDto noteDto);
 }

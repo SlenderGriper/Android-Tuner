@@ -3,8 +3,14 @@ package com.example.gitartuner.dto;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 @Entity(tableName = "Guitar")
-public class GuitarDto {
+public class GuitarDto implements Serializable {
+    @PrimaryKey(autoGenerate = true)
+    public  int id;
+    public  String name;
+    public int stringsCount;
     public GuitarDto(){
 
     }
@@ -15,10 +21,7 @@ public class GuitarDto {
         this.stringsCount = stringsCount;
     }
 
-    @PrimaryKey(autoGenerate = true)
-    public  int id;
-    public  String name;
-    public int stringsCount;
+
 
     public GuitarDto(String name, int stringsCount) {
         this.name=name;

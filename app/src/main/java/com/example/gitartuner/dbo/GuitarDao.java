@@ -12,7 +12,7 @@ import com.example.gitartuner.dto.GuitarDto;
 import java.util.List;
 
 @Dao
-public interface GuitarDao {
+    public interface GuitarDao {
     @Query("SELECT * FROM Guitar WHERE id = :id")
     GuitarDto getById(int id);
     @Insert(entity = GuitarDto.class)

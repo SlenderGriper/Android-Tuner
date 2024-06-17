@@ -1,4 +1,4 @@
-package com.example.gitartuner.controller;
+package com.example.gitartuner.controller.bluetooth;
 
 
 
@@ -7,43 +7,32 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
-import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
-
-import com.example.gitartuner.model.ConnectedThread;
-import com.example.gitartuner.view.MainActivity;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class BluetoothController {
-    private ConnectedThread mConnectedThread;
+
 
     private static final String TAG = "bluetooth1";
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     private static String address = "00:23:09:01:13:40";
-    private static final int REQUEST_ENABLE_BT = 1;
+
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
     private OutputStream outStream = null;
     Context context;
+
+
     public BluetoothController(Context context,BluetoothAdapter btAdapter){
         this.context=context;
 
         this.btAdapter = btAdapter;
         onStartBluetooth();
 
-    }
-
-
-    public void send(){
-        mConnectedThread.write("1");
     }
 
 

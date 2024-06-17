@@ -10,10 +10,7 @@ public class TunerMath {
     private int order=2;
     private double cutoffFrequencyLow=60;
     private double cutoffFrequencyHigh=2000;
-    public TunerMath(){
-        sampleRate=44100;
 
-    }
     public TunerMath(int sampleRate){
         this.sampleRate=sampleRate;
          cutoffFrequencyHigh=2000;
@@ -44,10 +41,14 @@ public class TunerMath {
     }
     private double[] blackmanNuttallWindow(int windowSize) {
         double[] window = new double[windowSize];
-        double a0 = 0.35875;
-        double a1 = 0.48829;
-        double a2 = 0.14128;
-        double a3 = 0.01168;
+//        double a0 = 0.35875;
+//        double a1 = 0.48829;
+//        double a2 = 0.14128;
+//        double a3 = 0.01168;
+        double a0 = 0.365819;
+        double a1 = 0.4891775;
+        double a2 = 0.1365995;
+        double a3 = 0.0105411;
         for (int i = 0; i < windowSize; i++) {
 
             window[i] = a0

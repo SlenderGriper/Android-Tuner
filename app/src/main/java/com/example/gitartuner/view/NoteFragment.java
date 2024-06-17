@@ -1,58 +1,49 @@
 package com.example.gitartuner.view;
 
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gitartuner.R;
 import com.example.gitartuner.controller.NoteDialogController;
-import com.example.gitartuner.dbo.GuitarDao;
 import com.example.gitartuner.dbo.GuitarTuningDao;
 import com.example.gitartuner.dbo.NoteDao;
 import com.example.gitartuner.dbo.database.GuitarDatabase;
 import com.example.gitartuner.dbo.database.GuitarDatabaseImpl;
-import com.example.gitartuner.dto.GuitarTuningDto;
-import com.example.gitartuner.dto.NoteDto;
 import com.example.gitartuner.dto.NoteStorage;
-import com.example.gitartuner.model.GuitarTuningDataBD;
-import com.example.gitartuner.model.NoteCalculator;
 import com.example.gitartuner.model.adapter.NoteAdapter;
-import com.example.gitartuner.model.adapter.NoteSpinnerAdapter;
-import com.example.gitartuner.model.inteface.NoteStorageTransfer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-public class NoteDialogLogic  {
-    private View view;
+public class NoteFragment extends Fragment {
 
     private NoteStorage itemList;
 
-    NoteDialogController controller;
-
-    public NoteDialogLogic(View view) {
-        this.view = view;
-
-
+    private NoteDialogController controller;
+private int length;
+    public NoteFragment(){
+        super(R.layout.note_dialog);
+        length=6;
     }
 
-    public void initial(int length) {
-
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+        length=getArguments().getInt("key");
         itemList = new NoteStorage(length);
-
         controller=new NoteDialogController(view);
 
-        NoteAdapter  adapter = new NoteAdapter(itemList);
+        NoteAdapter adapter = new NoteAdapter(itemList);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         layoutManager.setStackFromEnd(true);
@@ -91,6 +82,15 @@ public class NoteDialogLogic  {
 
         });
 
+        ImageButton back =view.findViewById(R.id.back);
+        back.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("note",  getData());
+            getParentFragmentManager().setFragmentResult("noteKey", bundle);
+
+
+            getParentFragmentManager().popBackStack("main", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        });
 
 
         GuitarDatabase db= GuitarDatabaseImpl.getInstance(view.getContext());
@@ -105,19 +105,18 @@ public class NoteDialogLogic  {
             controller.delete();
         });
         ImageButton load= view.findViewById(R.id.load);
-         load.setOnClickListener(v -> {
-             controller.load();
-         });
+        load.setOnClickListener(v -> {
+            controller.load();
+        });
 
 
         ImageButton save= view.findViewById(R.id.save);
-         save.setOnClickListener(v -> {
-             controller.save();
-         });
+        save.setOnClickListener(v -> {
+            controller.save();
+        });
     }
+
     public NoteStorage getData() {
         return itemList;
     }
-
-
 }

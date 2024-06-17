@@ -2,7 +2,9 @@ package com.example.gitartuner.dto;
 
 import com.example.gitartuner.model.NoteCalculator;
 
-public class TuneStorage {
+import java.io.Serializable;
+
+public class TuneStorage implements Serializable {
   private NoteStorage  currentNote;
   private NoteStorage  wantedNote;
   private int lenght;
